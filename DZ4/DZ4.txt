@@ -1,0 +1,130 @@
+/************************************   NBP, 4. DZ, MAJA PISKAČ   *****************************************/
+
+
+1. Korištenjem M/R frameworka izračunati prosječnu cijenu svakog prodanog proizvoda za sve narudžbe nakon
+1.1.1998. koje su naručene iz Francuske. Pohraniti rezultate u kolekciju france98. Polje u koje se sprema
+prosječna cijena se treba zvati mr_avg. Ispisati prvih 10 zapisa iz kolekcije france98.
+
+var mapFunction = function() {
+    for (var i = 0; i < this.details.length; i++) {
+       var key = this.details[i].product.name;
+       var value = { 
+		count: this.details[i].quantity, 
+		total: this.details[i].unit_price * this.details[i].quantity * (1-this.details[i].discount)
+	};
+       emit(key, value);
+    }
+};
+
+var reduceFunction = function(keyProdId, values) {
+	reducedVal = { count: 0, total: 0 };	
+	for (var i = 0; i < values.length ; i++){
+		reducedVal.count += values[i].count;
+		reducedVal.total += values[i].total;
+	}
+	return reducedVal;
+};
+
+var finalizeFunction = function (key, reducedVal) {
+	reducedVal.mr_avg = reducedVal.total/reducedVal.count;
+	return reducedVal;
+};
+
+db.orders.mapReduce(
+	mapFunction,
+	reduceFunction,
+	{ 
+		out: { merge: "france98" },
+		query: { 
+			"order_date": { $gte: "1998-01-01" }, 
+			"customer.country" : "France" 
+		},
+		finalize: finalizeFunction
+	}
+);
+
+ispis:
+{
+        "result" : "france98",
+        "timeMillis" : 82,
+        "counts" : {
+                "input" : 23,
+                "emit" : 56,
+                "reduce" : 14,
+                "output" : 39
+        },
+        "ok" : 1
+}	
+
+db.france98.find().limit(10)
+
+ispis:
+{ "_id" : "Alice Mutton", "value" : { "count" : 37, "total" : 1411.7999995632, "mr_avg" : 38.15675674495135 } }
+{ "_id" : "Carnarvon Tigers", "value" : { "count" : 6, "total" : 375, "mr_avg" : 62.5 } }
+{ "_id" : "Chartreuse verte", "value" : { "count" : 21, "total" : 378, "mr_avg" : 18 } }
+{ "_id" : "Chocolade", "value" : { "count" : 8, "total" : 86.69999938800001, "mr_avg" : 10.837499923500001 } }
+{ "_id" : "Côte de Blaye", "value" : { "count" : 5, "total" : 1317.5, "mr_avg" : 263.5 } }
+{ "_id" : "Filo Mix", "value" : { "count" : 5, "total" : 35, "mr_avg" : 7 } }
+{ "_id" : "Geitost", "value" : { "count" : 11, "total" : 25.999999940000002, "mr_avg" : 2.3636363581818185 } }
+{ "_id" : "Gorgonzola Telino", "value" : { "count" : 35, "total" : 437.5, "mr_avg" : 12.5 } }
+{ "_id" : "Grandma's Boysenberry Spread", "value" : { "count" : 70, "total" : 1562.499999125, "mr_avg" : 22.32142855892857 } }
+{ "_id" : "Guaraná Fantástica", "value" : { "count" : 10, "total" : 35.999999865, "mr_avg" : 3.5999999865 } }
+
+
+
+2. Korištenjem aggregation pipeline frameworka izračunati prosječnu cijenu svakog prodanog proizvoda za sve
+narudžbe nakon 1.1.1998. koje su naručene iz Francuske (isto kao u prvom zadatku). Rezultate spremiti u
+istu kolekciju i isti dokument (upariti prema _id polju), tako da se ovaj izračunati prosjek doda u novo polje
+agg_avg.
+Ispisati prvih 10 zapisa iz kolekcije france98. Napraviti upit za usporedbu prosjeka izračunatih putem M/R i
+AP frameworka. 
+
+db.orders.aggregate( [
+	{ $match: {
+		"order_date": { $gte: "1998-01-01" }, 
+		"customer.country" : "France" 
+	} } ,   
+	{ $unwind: "$details" },
+	{ $group: { 
+		_id: "$details.product.name",
+		sum: { $sum: { $multiply: ["$details.unit_price", "$details.quantity", {$subtract: [1, {$toDouble: "$details.discount" }]}]}}, 
+		count: { $sum: "$details.quantity" } 
+	} },
+	{ $addFields: { agg_avg: { $divide: ["$sum","$count"] } } },
+	{ $project: { agg_avg: 1 } },
+   	{ $merge: { into: "france98", on: "_id", whenMatched: "merge",  whenNotMatched: "insert" } }
+] )
+
+db.france98.find().limit(10)
+
+ispis:
+{ "_id" : "Alice Mutton", "value" : { "count" : 37, "total" : 1411.7999995632, "mr_avg" : 38.15675674495135 }, "agg_avg" : 38.15675674495135 }
+{ "_id" : "Carnarvon Tigers", "value" : { "count" : 6, "total" : 375, "mr_avg" : 62.5 }, "agg_avg" : 62.5 }
+{ "_id" : "Chartreuse verte", "value" : { "count" : 21, "total" : 378, "mr_avg" : 18 }, "agg_avg" : 18 }
+{ "_id" : "Chocolade", "value" : { "count" : 8, "total" : 86.69999938800001, "mr_avg" : 10.837499923500001 }, "agg_avg" : 10.837499923500001 }
+{ "_id" : "Côte de Blaye", "value" : { "count" : 5, "total" : 1317.5, "mr_avg" : 263.5 }, "agg_avg" : 263.5 }
+{ "_id" : "Filo Mix", "value" : { "count" : 5, "total" : 35, "mr_avg" : 7 }, "agg_avg" : 7 }
+{ "_id" : "Geitost", "value" : { "count" : 11, "total" : 25.999999940000002, "mr_avg" : 2.3636363581818185 }, "agg_avg" : 2.3636363581818185 }
+{ "_id" : "Gorgonzola Telino", "value" : { "count" : 35, "total" : 437.5, "mr_avg" : 12.5 }, "agg_avg" : 12.5 }
+{ "_id" : "Grandma's Boysenberry Spread", "value" : { "count" : 70, "total" : 1562.499999125, "mr_avg" : 22.32142855892857 }, "agg_avg" : 22.32142855892857 }
+{ "_id" : "Guaraná Fantástica", "value" : { "count" : 10, "total" : 35.999999865, "mr_avg" : 3.5999999865 }, "agg_avg" : 3.5999999865 }
+
+
+// Usporedba rezultata:
+
+// Broj dokumenata u kojima je vrijednost mr_avg i agg_avg jednaka.
+db.france98.find( { $where: function() { return this.value.mr_avg == this.agg_avg } } ).length()
+
+ispis: 39
+
+//Ukupan broj dokumenata u kolekciji france98.
+db.france98.find().length()
+
+ispis: 39
+
+// Dakle vrijednosti mr_avg i agg_avg su jednake u svim dokumentima. 
+
+// Mogli smo provjeriti i samo u koliko dokumenata su različite vrijednosti. 
+db.france98.find( { $where: function() { return this.value.mr_avg != this.agg_avg } } ).length()
+
+ispis: 0

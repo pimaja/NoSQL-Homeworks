@@ -1,0 +1,442 @@
+
+/***********************************  3. zadaća iz NBP, Maja Piskač  ************************************/
+
+
+1. Nakon ovakvog načina uvoza podataka, u grafu su neki podaci postali višak. Napisati naredbe kojima
+će se obrisati ono što je višak u grafu.
+
+
+Višak su id-jevi (odnosno primarni i strani ključevi) iz relacijske baze jer svaki vrh ima sada svoj 
+novi id u grafovskoj bazi, a veze imamo sačuvane kroz bridove.
+
+
+//Naredbe kojima se briše višak:
+
+MATCH (c:Category) REMOVE c.categoryID
+ 
+ispis: Set 8 properties, completed after 1 ms.
+
+
+MATCH (c:Customer) REMOVE c.customerID
+
+ispis: Set 91 properties, completed after 5 ms.
+
+
+// U Order ne mičemo EmployeeID i ShipVia jer za njih još nismo kreirali veze pa ostavljamo mogućnost da se to doda kasnije.
+
+MATCH (o:Order) REMOVE o.orderID, o.customerID
+
+ispis: Set 1660 properties, completed after 34 ms.
+
+
+MATCH (p:Product) REMOVE p.supplierID, p.productID, p.categoryID
+
+ispis: Set 231 properties, completed after 8 ms.
+
+
+MATCH (s:Supplier) REMOVE s.supplierID
+
+ispis: Set 29 properties, completed after 3 ms.
+
+
+MATCH ()-[o:ORDERS]->() REMOVE o.productID, o.orderID
+
+ispis: Set 4310 properties, completed after 100 ms.
+
+
+/*******************************************************************************************************/
+
+
+2. Napisati upit koji će vratiti popis najprodavanijih proizvoda (najprodavaniji = suma količine prodanih
+proizvoda u narudžbama). Popis treba sadržavati ime proizvoda, ime kategorije kojoj pripada i broj
+prodanih proizvoda. Ograničiti ispis na prvih 20 proizvoda.
+
+
+MATCH (o:Order) -[details:ORDERS]-> (p:Product) -[]-> (c:Category) 
+RETURN p.productName, c.categoryName, SUM(details.quantity) AS sold 
+ORDER BY sold DESC 
+LIMIT 20
+
+ispis:
+╒═════════════════════════════════╤════════════════╤══════╕
+│"p.productName"                  │"c.categoryName"│"sold"│
+╞═════════════════════════════════╪════════════════╪══════╡
+│"Camembert Pierrot"              │"Dairy Products"│1577  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Raclette Courdavault"           │"Dairy Products"│1496  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Gorgonzola Telino"              │"Dairy Products"│1397  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Gnocchi di nonna Alice"         │"Grains/Cereals"│1263  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Pavlova"                        │"Confections"   │1158  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Rhönbräu Klosterbier"           │"Beverages"     │1155  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Guaraná Fantástica"             │"Beverages"     │1125  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Boston Crab Meat"               │"Seafood"       │1103  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Tarte au sucre"                 │"Confections"   │1083  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Flotemysost"                    │"Dairy Products"│1057  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Chang"                          │"Beverages"     │1057  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Sir Rodney's Scones"            │"Confections"   │1016  │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Jack's New England Clam Chowder"│"Seafood"       │981   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Lakkalikööri"                   │"Beverages"     │981   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Alice Mutton"                   │"Meat/Poultry"  │978   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Pâté chinois"                   │"Meat/Poultry"  │903   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Konbu"                          │"Seafood"       │891   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Manjimup Dried Apples"          │"Produce"       │886   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Steeleye Stout"                 │"Beverages"     │883   │
+├─────────────────────────────────┼────────────────┼──────┤
+│"Chai"                           │"Beverages"     │828   │
+└─────────────────────────────────┴────────────────┴──────┘ 
+
+
+// Kada ne bi svi proizvodi imali kategoriju, onda bismo sljedećim upitom mogli dobiti i one proizvode
+// koji nemaju kategoriju, a najprodavaniji su.
+
+MATCH (o:Order) -[details:ORDERS]-> (p:Product)
+OPTIONAL MATCH (p:Product) -[]-> (c:Category)
+RETURN p.productName, c.categoryName, SUM(details.quantity) AS sold 
+ORDER BY sold DESC 
+LIMIT 20
+
+// u ovom slučaju svi proizvodi imaju kategoriju pa je ispis isti
+
+
+/*******************************************************************************************************/
+
+
+3. Napisati upit za preporučivanje (recommendation engine, „kupci koji su kupili ovo su kupili i…“). Upit
+treba dohvatiti 8 proizvoda koji se najčešće kupuju s „Mozzarella di Giovanni“ i poredati ih po tome
+koliko su često kupljeni zajedno.
+
+
+MATCH (p:Product) <-[:ORDERS]- (:Order) -[:ORDERS]-> (:Product {productName:'Mozzarella di Giovanni'}) 
+RETURN p.productName, COUNT(p.productName) AS number 
+ORDER BY number DESC 
+LIMIT 8
+
+ispis:
+╒═════════════════════════════════╤════════╕
+│"(p.productName)"                │"number"│
+╞═════════════════════════════════╪════════╡
+│"Gorgonzola Telino"              │6       │
+├─────────────────────────────────┼────────┤
+│"Uncle Bob's Organic Dried Pears"│4       │
+├─────────────────────────────────┼────────┤
+│"Camembert Pierrot"              │3       │
+├─────────────────────────────────┼────────┤
+│"Tarte au sucre"                 │3       │
+├─────────────────────────────────┼────────┤
+│"Gumbär Gummibärchen"            │3       │
+├─────────────────────────────────┼────────┤
+│"Geitost"                        │3       │
+├─────────────────────────────────┼────────┤
+│"Queso Cabrales"                 │3       │
+├─────────────────────────────────┼────────┤
+│"Sir Rodney's Marmalade"         │3       │
+└─────────────────────────────────┴────────┘
+
+
+/*******************************************************************************************************/
+
+
+4. Napisati upit kojim će se pronaći koji su kupci (Customer.contactName) prema svome izboru
+proizvoda najsličniji kupcu kojeg predstavlja Paula Wilson. Ispisati prvih 5 osoba.
+
+1. NAČIN
+// Tražimo kupce koji su jednak broj puta naručili isti proizvod kao i Paula Wilson.
+
+MATCH (c:Customer)-[]->()-[]->(p:Product)
+WITH c, p,
+size((:Customer {contactName:'Paula Wilson'})-[]->()-[]->(p)) AS outbound, size((p)<-[]-()<-[]-(c)) AS inbound
+ORDER BY p.productName
+WHERE NOT (c.contactName = 'Paula Wilson') AND outbound = inbound
+RETURN c.contactName, COLLECT(p.productName) AS products, COUNT(inbound) AS productNumber
+ORDER BY productNumber DESC
+LIMIT 5
+
+ispis:
+╒════════════════════╤══════════════════════════════════════════════════════════════════════╤═══════════════╕
+│"c.contactName"     │"products"                                                            │"productNumber"│
+╞════════════════════╪══════════════════════════════════════════════════════════════════════╪═══════════════╡
+│"Christina Berglund"│["Aniseed Syrup","Camembert Pierrot","Camembert Pierrot","Chai","Filo │20             │
+│                    │Mix","Flotemysost","Flotemysost","Ipoh Coffee","Jack's New England Cla│               │
+│                    │m Chowder","Jack's New England Clam Chowder","Konbu","Lakkalikööri","P│               │
+│                    │avlova","Perth Pasties","Raclette Courdavault","Rhönbräu Klosterbier",│               │
+│                    │"Rhönbräu Klosterbier","Rhönbräu Klosterbier","Röd Kaviar","Tofu"]    │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Jose Pavarotti"    │["Chef Anton's Gumbo Mix","Escargots de Bourgogne","Gnocchi di nonna A│19             │
+│                    │lice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di no│               │
+│                    │nna Alice","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Telino"│               │
+│                    │,"Lakkalikööri","NuNuCa Nuß-Nougat-Creme","Queso Manchego La Pastora",│               │
+│                    │"Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","│               │
+│                    │Röd Kaviar","Tunnbröd","Wimmers gute Semmelknödel","Wimmers gute Semme│               │
+│                    │lknödel"]                                                             │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Roland Mendel"     │["Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Camember│18             │
+│                    │t Pierrot","Camembert Pierrot","Chang","Chang","Ikura","Jack's New Eng│               │
+│                    │land Clam Chowder","Jack's New England Clam Chowder","Louisiana Hot Sp│               │
+│                    │iced Okra","Mozzarella di Giovanni","Nord-Ost Matjeshering","Schoggi S│               │
+│                    │chokolade","Spegesild","Tofu","Tunnbröd"]                             │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Carlos Hernández"  │["Chai","Chartreuse verte","Escargots de Bourgogne","Jack's New Englan│16             │
+│                    │d Clam Chowder","Jack's New England Clam Chowder","Nord-Ost Matjesheri│               │
+│                    │ng","NuNuCa Nuß-Nougat-Creme","Perth Pasties","Queso Cabrales","Rhönbr│               │
+│                    │äu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Schoggi│               │
+│                    │ Schokolade","Spegesild","Wimmers gute Semmelknödel","Wimmers gute Sem│               │
+│                    │melknödel"]                                                           │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Patricia McKenna"  │["Chai","Chang","Chang","Chartreuse verte","Grandma's Boysenberry Spre│15             │
+│                    │ad","Ikura","Ipoh Coffee","Jack's New England Clam Chowder","Jack's Ne│               │
+│                    │w England Clam Chowder","Lakkalikööri","Mascarpone Fabioli","Mascarpon│               │
+│                    │e Fabioli","Pavlova","Queso Cabrales","Tofu"]                         │               │
+└────────────────────┴──────────────────────────────────────────────────────────────────────┴───────────────┘
+
+
+2. NAČIN
+// Ispisujemo kupce koji su jednak broj puta naručili isti proizvod 
+// ( može biti da su oboje samo jednom naručili neki proizvod i nije im se svidio pa nisu više naručivali)
+// ili su oboje naručili barem dvaput (znači svidio im se proizvod), ali je jedan naručio više puta nego drugi
+
+MATCH (c:Customer)-[]->()-[]->(p:Product)
+WITH c, p,
+size((:Customer {contactName:'Paula Wilson'})-[]->()-[]->(p)) AS outbound, size((p)<-[]-()<-[]-(c)) AS inbound
+ORDER BY p.productName
+WHERE NOT (c.contactName = 'Paula Wilson') AND (outbound=inbound OR 2<=outbound<=inbound OR 2<=inbound<=outbound)
+RETURN c.contactName, COLLECT(p.productName) AS products, COUNT(inbound) AS productNumber
+ORDER BY productNumber DESC
+LIMIT 5
+
+ispis:
+╒════════════════════╤════════════════════════════════════════════════════════════╤═══════════════╕
+│"c.contactName"     │"products"                                                  │"productNumber"│
+╞════════════════════╪════════════════════════════════════════════════════════════╪═══════════════╡
+│"Jose Pavarotti"    │["Alice Mutton","Alice Mutton","Alice Mutton","Camembert Pie│43             │
+│                    │rrot","Camembert Pierrot","Camembert Pierrot","Chang","Chang│               │
+│                    │","Chang","Chang","Chang","Chef Anton's Gumbo Mix","Escargot│               │
+│                    │s de Bourgogne","Flotemysost","Flotemysost","Flotemysost","G│               │
+│                    │nocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di │               │
+│                    │nonna Alice","Gnocchi di nonna Alice","Gorgonzola Telino","G│               │
+│                    │orgonzola Telino","Gorgonzola Telino","Jack's New England Cl│               │
+│                    │am Chowder","Jack's New England Clam Chowder","Jack's New En│               │
+│                    │gland Clam Chowder","Jack's New England Clam Chowder","Lakka│               │
+│                    │likööri","NuNuCa Nuß-Nougat-Creme","Pâté chinois","Pâté chin│               │
+│                    │ois","Pâté chinois","Queso Manchego La Pastora","Rhönbräu Kl│               │
+│                    │osterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rö│               │
+│                    │d Kaviar","Tarte au sucre","Tarte au sucre","Tarte au sucre"│               │
+│                    │,"Tunnbröd","Wimmers gute Semmelknödel","Wimmers gute Semmel│               │
+│                    │knödel"]                                                    │               │
+├────────────────────┼────────────────────────────────────────────────────────────┼───────────────┤
+│"Roland Mendel"     │["Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton"│33             │
+│                    │,"Camembert Pierrot","Camembert Pierrot","Chang","Chang","Fl│               │
+│                    │otemysost","Flotemysost","Flotemysost","Gnocchi di nonna Ali│               │
+│                    │ce","Gnocchi di nonna Alice","Gorgonzola Telino","Gorgonzola│               │
+│                    │ Telino","Gorgonzola Telino","Gorgonzola Telino","Ikura","Ja│               │
+│                    │ck's New England Clam Chowder","Jack's New England Clam Chow│               │
+│                    │der","Louisiana Hot Spiced Okra","Mozzarella di Giovanni","N│               │
+│                    │ord-Ost Matjeshering","Rhönbräu Klosterbier","Rhönbräu Klost│               │
+│                    │erbier","Schoggi Schokolade","Spegesild","Tofu","Tunnbröd","│               │
+│                    │Wimmers gute Semmelknödel","Wimmers gute Semmelknödel","Wimm│               │
+│                    │ers gute Semmelknödel","Wimmers gute Semmelknödel"]         │               │
+├────────────────────┼────────────────────────────────────────────────────────────┼───────────────┤
+│"Horst Kloss"       │["Aniseed Syrup","Camembert Pierrot","Camembert Pierrot","Ca│28             │
+│                    │membert Pierrot","Camembert Pierrot","Chang","Chang","Chang"│               │
+│                    │,"Côte de Blaye","Côte de Blaye","Escargots de Bourgogne","G│               │
+│                    │orgonzola Telino","Gorgonzola Telino","Ikura","Northwoods Cr│               │
+│                    │anberry Sauce","Original Frankfurter grüne Soße","Original F│               │
+│                    │rankfurter grüne Soße","Pavlova","Schoggi Schokolade","Sir R│               │
+│                    │odney's Marmalade","Sir Rodney's Marmalade","Tarte au sucre"│               │
+│                    │,"Tarte au sucre","Tunnbröd","Uncle Bob's Organic Dried Pear│               │
+│                    │s","Uncle Bob's Organic Dried Pears","Wimmers gute Semmelknö│               │
+│                    │del","Wimmers gute Semmelknödel"]                           │               │
+├────────────────────┼────────────────────────────────────────────────────────────┼───────────────┤
+│"Patricia McKenna"  │["Chai","Chang","Chang","Chartreuse verte","Flotemysost","Fl│21             │
+│                    │otemysost","Flotemysost","Flotemysost","Gorgonzola Telino","│               │
+│                    │Gorgonzola Telino","Grandma's Boysenberry Spread","Ikura","I│               │
+│                    │poh Coffee","Jack's New England Clam Chowder","Jack's New En│               │
+│                    │gland Clam Chowder","Lakkalikööri","Mascarpone Fabioli","Mas│               │
+│                    │carpone Fabioli","Pavlova","Queso Cabrales","Tofu"]         │               │
+├────────────────────┼────────────────────────────────────────────────────────────┼───────────────┤
+│"Christina Berglund"│["Aniseed Syrup","Camembert Pierrot","Camembert Pierrot","Ch│20             │
+│                    │ai","Filo Mix","Flotemysost","Flotemysost","Ipoh Coffee","Ja│               │
+│                    │ck's New England Clam Chowder","Jack's New England Clam Chow│               │
+│                    │der","Konbu","Lakkalikööri","Pavlova","Perth Pasties","Racle│               │
+│                    │tte Courdavault","Rhönbräu Klosterbier","Rhönbräu Klosterbie│               │
+│                    │r","Rhönbräu Klosterbier","Röd Kaviar","Tofu"]              │               │
+└────────────────────┴────────────────────────────────────────────────────────────┴───────────────┘
+
+3. NAČIN
+// Ispisujemo one kupce koji su barem jednom naručili isti proizvod kao i Paula Wilson.
+// Ovaj pristup ne daje najbolje rješenje ako netko kupi neki proizvod 20 puta koji je Paula kupila samo jednom,
+// ali u slučaju velikog poklapanja broja isprobanih proizvoda, mislim da se također može ustanoviti sličnost.
+
+MATCH (:Customer {contactName:'Paula Wilson'}) -[]-> () -[]-> (p:Product) <-[]- () <-[]- (c:Customer) 
+WHERE NOT (c.contactName = 'Paula Wilson')
+WITH c, p ORDER BY p.productName 
+RETURN c.contactName, COLLECT(DISTINCT(p.productName)) AS products, COUNT(DISTINCT(p.productName)) AS countProducts 
+ORDER BY countProducts DESC 
+LIMIT 5
+
+// Alternativni zapisi za MATCH:
+// možemo zapisati i nazive bridova i vrhova koji nam nisu relevantni, kako postoji samo jedan tip za njih u ovom slučaju to nije nužno.
+MATCH (:Customer {contactName:'Paula Wilson'}) -[:PURCHASED]-> (:Order) -[:ORDERS]-> (p:Product) <-[:ORDERS]- (:Order) <-[:PURCHASED]- (c:Customer)
+
+// ako želimo pisati strelice u samo jednom smjeru u jednom redu.
+MATCH (:Customer {contactName:'Paula Wilson'}) -[:PURCHASED]-> (:Order) -[:ORDERS]-> (p:Product),
+(c:Customer)- [:PURCHASED]-> (:Order) -[:ORDERS]-> (p:Product)
+
+
+ispis:
+╒════════════════════╤══════════════════════════════════════════════════════════════════════╤═══════════════╕
+│"c.contactName"     │"products"                                                            │"countProducts"│
+╞════════════════════╪══════════════════════════════════════════════════════════════════════╪═══════════════╡
+│"Roland Mendel"     │["Alice Mutton","Aniseed Syrup","Camembert Pierrot","Chang","Chartreus│33             │
+│                    │e verte","Chef Anton's Gumbo Mix","Côte de Blaye","Flotemysost","Gnocc│               │
+│                    │hi di nonna Alice","Gorgonzola Telino","Guaraná Fantástica","Ikura","J│               │
+│                    │ack's New England Clam Chowder","Konbu","Louisiana Fiery Hot Pepper Sa│               │
+│                    │uce","Louisiana Hot Spiced Okra","Mascarpone Fabioli","Mozzarella di G│               │
+│                    │iovanni","Nord-Ost Matjeshering","Pavlova","Pâté chinois","Queso Cabra│               │
+│                    │les","Queso Manchego La Pastora","Raclette Courdavault","Rhönbräu Klos│               │
+│                    │terbier","Schoggi Schokolade","Sir Rodney's Marmalade","Spegesild","Ta│               │
+│                    │rte au sucre","Tofu","Tunnbröd","Uncle Bob's Organic Dried Pears","Wim│               │
+│                    │mers gute Semmelknödel"]                                              │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Jose Pavarotti"    │["Alice Mutton","Camembert Pierrot","Chai","Chang","Chef Anton's Gumbo│29             │
+│                    │ Mix","Escargots de Bourgogne","Flotemysost","Gnocchi di nonna Alice",│               │
+│                    │"Gorgonzola Telino","Guaraná Fantástica","Ikura","Jack's New England C│               │
+│                    │lam Chowder","Konbu","Lakkalikööri","Mozzarella di Giovanni","NuNuCa N│               │
+│                    │uß-Nougat-Creme","Pavlova","Perth Pasties","Pâté chinois","Queso Manch│               │
+│                    │ego La Pastora","Raclette Courdavault","Rhönbräu Klosterbier","Röd Kav│               │
+│                    │iar","Spegesild","Tarte au sucre","Tofu","Tunnbröd","Uncle Bob's Organ│               │
+│                    │ic Dried Pears","Wimmers gute Semmelknödel"]                          │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Horst Kloss"       │["Aniseed Syrup","Camembert Pierrot","Chai","Chang","Chartreuse verte"│29             │
+│                    │,"Chef Anton's Cajun Seasoning","Côte de Blaye","Escargots de Bourgogn│               │
+│                    │e","Flotemysost","Gorgonzola Telino","Ikura","Ipoh Coffee","Konbu","La│               │
+│                    │kkalikööri","Louisiana Fiery Hot Pepper Sauce","Mozzarella di Giovanni│               │
+│                    │","Northwoods Cranberry Sauce","Original Frankfurter grüne Soße","Pavl│               │
+│                    │ova","Perth Pasties","Pâté chinois","Raclette Courdavault","Rhönbräu K│               │
+│                    │losterbier","Schoggi Schokolade","Sir Rodney's Marmalade","Tarte au su│               │
+│                    │cre","Tunnbröd","Uncle Bob's Organic Dried Pears","Wimmers gute Semmel│               │
+│                    │knödel"]                                                              │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Christina Berglund"│["Alice Mutton","Aniseed Syrup","Camembert Pierrot","Chai","Chang","Ch│26             │
+│                    │artreuse verte","Chef Anton's Cajun Seasoning","Côte de Blaye","Filo M│               │
+│                    │ix","Flotemysost","Guaraná Fantástica","Ikura","Ipoh Coffee","Jack's N│               │
+│                    │ew England Clam Chowder","Konbu","Lakkalikööri","Mascarpone Fabioli","│               │
+│                    │Nord-Ost Matjeshering","Pavlova","Perth Pasties","Pâté chinois","Racle│               │
+│                    │tte Courdavault","Rhönbräu Klosterbier","Röd Kaviar","Sir Rodney's Mar│               │
+│                    │malade","Tofu"]                                                       │               │
+├────────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Patricia McKenna"  │["Camembert Pierrot","Chai","Chang","Chartreuse verte","Chef Anton's C│25             │
+│                    │ajun Seasoning","Escargots de Bourgogne","Flotemysost","Gnocchi di non│               │
+│                    │na Alice","Gorgonzola Telino","Grandma's Boysenberry Spread","Ikura","│               │
+│                    │Ipoh Coffee","Jack's New England Clam Chowder","Lakkalikööri","Louisia│               │
+│                    │na Fiery Hot Pepper Sauce","Mascarpone Fabioli","Nord-Ost Matjeshering│               │
+│                    │","Original Frankfurter grüne Soße","Pavlova","Perth Pasties","Queso C│               │
+│                    │abrales","Raclette Courdavault","Rhönbräu Klosterbier","Tarte au sucre│               │
+│                    │","Tofu"]                                                             │               │
+└────────────────────┴──────────────────────────────────────────────────────────────────────┴───────────────┘
+
+
+// Usporedimo s brojem različitih proizvoda koje je Paula naručila.
+
+MATCH (:Customer {contactName:'Paula Wilson'}) -[]-> () -[]-> (p:Product) 
+WITH p ORDER BY p.productName
+RETURN COLLECT(DISTINCT(p.productName)), COUNT(DISTINCT(p.productName))
+
+ispis:
+╒══════════════════════════════════════════════════════════════════════╤════════════════════════════════╕
+│"COLLECT(DISTINCT(p.productName))"                                    │"COUNT(DISTINCT(p.productName))"│
+╞══════════════════════════════════════════════════════════════════════╪════════════════════════════════╡
+│["Alice Mutton","Aniseed Syrup","Camembert Pierrot","Chai","Chang","Ch│45                              │
+│artreuse verte","Chef Anton's Cajun Seasoning","Chef Anton's Gumbo Mix│                                │
+│","Côte de Blaye","Escargots de Bourgogne","Filo Mix","Flotemysost","G│                                │
+│nocchi di nonna Alice","Gorgonzola Telino","Grandma's Boysenberry Spre│                                │
+│ad","Guaraná Fantástica","Ikura","Ipoh Coffee","Jack's New England Cla│                                │
+│m Chowder","Konbu","Lakkalikööri","Louisiana Fiery Hot Pepper Sauce","│                                │
+│Louisiana Hot Spiced Okra","Mascarpone Fabioli","Mozzarella di Giovann│                                │
+│i","Nord-Ost Matjeshering","Northwoods Cranberry Sauce","NuNuCa Nuß-No│                                │
+│ugat-Creme","Original Frankfurter grüne Soße","Pavlova","Perth Pasties│                                │
+│","Pâté chinois","Queso Cabrales","Queso Manchego La Pastora","Raclett│                                │
+│e Courdavault","Rhönbräu Klosterbier","Röd Kaviar","Schoggi Schokolade│                                │
+│","Sir Rodney's Marmalade","Spegesild","Tarte au sucre","Tofu","Tunnbr│                                │
+│öd","Uncle Bob's Organic Dried Pears","Wimmers gute Semmelknödel"]    │                                │
+└──────────────────────────────────────────────────────────────────────┴────────────────────────────────┘
+
+// Vidimo da u sva tri načina dobijemo 4 od 5 istih sličnih kupaca.
+
+/*******************************************************************************************************/
+
+
+5. Napisati upit koji će svakoj narudžbi dodati svojstvo total koje predstavlja ukupnu plaćenu cijenu te
+narudžbe (uzeti u obzir količine i jedinične cijene kupljenih proizvoda). Napomena: unit_price je
+importiran kao string, pa za njega treba koristiti funkciju toFloat().
+
+
+MATCH (n:Order) -[o:ORDERS]-> (:Product) 
+WITH n, SUM( toFloat(o.unitPrice) * o.quantity * (1-toFloat(o.discount)) ) as total
+SET n.total=total
+
+ispis: Set 830 properties, completed after 20 ms.
+
+
+// ispišimo prvih 5 total vrijednosti
+
+MATCH (n:Order) RETURN id(n), n.total LIMIT 5
+
+ispis:
+╒═══════╤═════════╕
+│"id(n)"│"n.total"│
+╞═══════╪═════════╡
+│1240   │440.0    │
+├───────┼─────────┤
+│1241   │1863.4   │
+├───────┼─────────┤
+│1242   │1552.6   │
+├───────┼─────────┤
+│1243   │654.06   │
+├───────┼─────────┤
+│1244   │3597.9   │
+└───────┴─────────┘
+
+
+// vidimo da dobijemo iste vrijednosti i ako samo pomnožimo i zbrojimo vrijednosti iz :ORDERS
+
+MATCH (n:Order) -[o:ORDERS]-> (p:Product) 
+RETURN id(n), COLLECT(p.productName), COLLECT(o.unitPrice), COLLECT(o.quantity), COLLECT(o.discount), SUM( toFloat(o.unitPrice)* o.quantity * (1-toFloat(o.discount)) ) 
+ORDER BY id(n) LIMIT 5
+
+ispis:
+╒═══════╤══════════════════════════════════════╤═════════════════════════╤═════════════════════╤═════════════════════╤══════════════════════════════════════╕
+│"id(n)"│"COLLECT(p.productName)"              │"COLLECT(o.unitPrice)"   │"COLLECT(o.quantity)"│"COLLECT(o.discount)"│"SUM( toFloat(o.unitPrice)* o.quantity│
+│       │                                      │                         │                     │                     │ * (1-toFloat(o.discount)) )"         │
+╞═══════╪══════════════════════════════════════╪═════════════════════════╪═════════════════════╪═════════════════════╪══════════════════════════════════════╡
+│1240   │["Queso Cabrales","Singaporean Hokkien│["14.00","9.80","34.80"] │[12,10,5]            │["0","0","0"]        │440.0                                 │
+│       │ Fried Mee","Mozzarella di Giovanni"] │                         │                     │                     │                                      │
+├───────┼──────────────────────────────────────┼─────────────────────────┼─────────────────────┼─────────────────────┼──────────────────────────────────────┤
+│1241   │["Tofu","Manjimup Dried Apples"]      │["18.60","42.40"]        │[9,40]               │["0","0"]            │1863.4                                │
+├───────┼──────────────────────────────────────┼─────────────────────────┼─────────────────────┼─────────────────────┼──────────────────────────────────────┤
+│1242   │["Jack's New England Clam Chowder","Ma│["7.70","42.40","16.80"] │[10,35,15]           │["0","0.15","0.15"]  │1552.6                                │
+│       │njimup Dried Apples","Louisiana Fiery │                         │                     │                     │                                      │
+│       │Hot Pepper Sauce"]                    │                         │                     │                     │                                      │
+├───────┼──────────────────────────────────────┼─────────────────────────┼─────────────────────┼─────────────────────┼──────────────────────────────────────┤
+│1243   │["Gustaf's Knäckebröd","Ravioli Angelo│["16.80","15.60","16.80"]│[6,15,20]            │["0.05","0.05","0"]  │654.06                                │
+│       │","Louisiana Fiery Hot Pepper Sauce"] │                         │                     │                     │                                      │
+├───────┼──────────────────────────────────────┼─────────────────────────┼─────────────────────┼─────────────────────┼──────────────────────────────────────┤
+│1244   │["Sir Rodney's Marmalade","Geitost","C│["64.80","2.00","27.20"] │[40,25,40]           │["0.05","0.05","0"]  │3597.9                                │
+│       │amembert Pierrot"]                    │                         │                     │                     │                                      │
+└───────┴──────────────────────────────────────┴─────────────────────────┴─────────────────────┴─────────────────────┴──────────────────────────────────────┘

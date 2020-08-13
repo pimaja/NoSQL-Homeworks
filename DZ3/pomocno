@@ -1,0 +1,169 @@
+╒══════════════════════════════════════════════════════════════════════╤═══════════════╕
+│"products"                                                            │"countProducts"│
+╞══════════════════════════════════════════════════════════════════════╪═══════════════╡
+│["Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Aniseed │71             │
+│Syrup","Camembert Pierrot","Camembert Pierrot","Chai","Chang","Chang",│               │
+│"Chartreuse verte","Chef Anton's Cajun Seasoning","Chef Anton's Cajun │               │
+│Seasoning","Chef Anton's Gumbo Mix","Côte de Blaye","Côte de Blaye","E│               │
+│scargots de Bourgogne","Filo Mix","Flotemysost","Flotemysost","Gnocchi│               │
+│ di nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gn│               │
+│occhi di nonna Alice","Gorgonzola Telino","Gorgonzola Telino","Gorgonz│               │
+│ola Telino","Grandma's Boysenberry Spread","Guaraná Fantástica","Ikura│               │
+│","Ipoh Coffee","Jack's New England Clam Chowder","Jack's New England │               │
+│Clam Chowder","Konbu","Lakkalikööri","Louisiana Fiery Hot Pepper Sauce│               │
+│","Louisiana Hot Spiced Okra","Mascarpone Fabioli","Mascarpone Fabioli│               │
+│","Mozzarella di Giovanni","Nord-Ost Matjeshering","Northwoods Cranber│               │
+│ry Sauce","NuNuCa Nuß-Nougat-Creme","Original Frankfurter grüne Soße",│               │
+│"Original Frankfurter grüne Soße","Pavlova","Perth Pasties","Pâté chin│               │
+│ois","Pâté chinois","Queso Cabrales","Queso Manchego La Pastora","Racl│               │
+│ette Courdavault","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhönb│               │
+│räu Klosterbier","Röd Kaviar","Schoggi Schokolade","Sir Rodney's Marma│               │
+│lade","Sir Rodney's Marmalade","Spegesild","Tarte au sucre","Tarte au │               │
+│sucre","Tarte au sucre","Tarte au sucre","Tofu","Tunnbröd","Uncle Bob'│               │
+│s Organic Dried Pears","Uncle Bob's Organic Dried Pears","Uncle Bob's │               │
+│Organic Dried Pears","Wimmers gute Semmelknödel","Wimmers gute Semmelk│               │
+│nödel"]                                                               │               │
+└──────────────────────────────────────────────────────────────────────┴───────────────┘
+
+╒══════════════════╤══════════════════════════════════════════════════════════════════════╤═══════════════╕
+│"c.contactName"   │"products"                                                            │"countProducts"│
+╞══════════════════╪══════════════════════════════════════════════════════════════════════╪═══════════════╡
+│"Jose Pavarotti"  │["Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Alice Mu│135            │
+│                  │tton","Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Ali│               │
+│                  │ce Mutton","Alice Mutton","Alice Mutton","Camembert Pierrot","Camember│               │
+│                  │t Pierrot","Camembert Pierrot","Camembert Pierrot","Camembert Pierrot"│               │
+│                  │,"Camembert Pierrot","Chai","Chai","Chai","Chang","Chang","Chang","Cha│               │
+│                  │ng","Chang","Chang","Chang","Chang","Chang","Chang","Chef Anton's Gumb│               │
+│                  │o Mix","Escargots de Bourgogne","Flotemysost","Flotemysost","Flotemyso│               │
+│                  │st","Flotemysost","Flotemysost","Flotemysost","Gnocchi di nonna Alice"│               │
+│                  │,"Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna A│               │
+│                  │lice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di no│               │
+│                  │nna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi │               │
+│                  │di nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gno│               │
+│                  │cchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice"│               │
+│                  │,"Gnocchi di nonna Alice","Gorgonzola Telino","Gorgonzola Telino","Gor│               │
+│                  │gonzola Telino","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Te│               │
+│                  │lino","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Telino","Gua│               │
+│                  │raná Fantástica","Guaraná Fantástica","Guaraná Fantástica","Ikura","Ik│               │
+│                  │ura","Jack's New England Clam Chowder","Jack's New England Clam Chowde│               │
+│                  │r","Jack's New England Clam Chowder","Jack's New England Clam Chowder"│               │
+│                  │,"Jack's New England Clam Chowder","Jack's New England Clam Chowder","│               │
+│                  │Jack's New England Clam Chowder","Jack's New England Clam Chowder","Ko│               │
+│                  │nbu","Konbu","Konbu","Konbu","Lakkalikööri","Mozzarella di Giovanni","│               │
+│                  │Mozzarella di Giovanni","NuNuCa Nuß-Nougat-Creme","Pavlova","Pavlova",│               │
+│                  │"Pavlova","Perth Pasties","Perth Pasties","Pâté chinois","Pâté chinois│               │
+│                  │","Pâté chinois","Pâté chinois","Pâté chinois","Pâté chinois","Queso M│               │
+│                  │anchego La Pastora","Raclette Courdavault","Raclette Courdavault","Rac│               │
+│                  │lette Courdavault","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhön│               │
+│                  │bräu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhönb│               │
+│                  │räu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhönbr│               │
+│                  │äu Klosterbier","Röd Kaviar","Spegesild","Spegesild","Spegesild","Tart│               │
+│                  │e au sucre","Tarte au sucre","Tarte au sucre","Tarte au sucre","Tarte │               │
+│                  │au sucre","Tarte au sucre","Tarte au sucre","Tarte au sucre","Tarte au│               │
+│                  │ sucre","Tarte au sucre","Tarte au sucre","Tarte au sucre","Tofu","Tof│               │
+│                  │u","Tunnbröd","Uncle Bob's Organic Dried Pears","Uncle Bob's Organic D│               │
+│                  │ried Pears","Uncle Bob's Organic Dried Pears","Wimmers gute Semmelknöd│               │
+│                  │el","Wimmers gute Semmelknödel","Wimmers gute Semmelknödel","Wimmers g│               │
+│                  │ute Semmelknödel"]                                                    │               │
+├──────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Roland Mendel"   │["Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Alice Mu│116            │
+│                  │tton","Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Ali│               │
+│                  │ce Mutton","Alice Mutton","Alice Mutton","Alice Mutton","Alice Mutton"│               │
+│                  │,"Alice Mutton","Alice Mutton","Aniseed Syrup","Aniseed Syrup","Camemb│               │
+│                  │ert Pierrot","Camembert Pierrot","Camembert Pierrot","Camembert Pierro│               │
+│                  │t","Chang","Chang","Chang","Chang","Chartreuse verte","Chartreuse vert│               │
+│                  │e","Chef Anton's Gumbo Mix","Chef Anton's Gumbo Mix","Côte de Blaye","│               │
+│                  │Côte de Blaye","Flotemysost","Flotemysost","Flotemysost","Flotemysost"│               │
+│                  │,"Flotemysost","Flotemysost","Gnocchi di nonna Alice","Gnocchi di nonn│               │
+│                  │a Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di│               │
+│                  │ nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gnocc│               │
+│                  │hi di nonna Alice","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola│               │
+│                  │ Telino","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Telino","│               │
+│                  │Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola│               │
+│                  │ Telino","Gorgonzola Telino","Gorgonzola Telino","Guaraná Fantástica",│               │
+│                  │"Guaraná Fantástica","Guaraná Fantástica","Guaraná Fantástica","Ikura"│               │
+│                  │,"Jack's New England Clam Chowder","Jack's New England Clam Chowder","│               │
+│                  │Jack's New England Clam Chowder","Jack's New England Clam Chowder","Ko│               │
+│                  │nbu","Konbu","Louisiana Fiery Hot Pepper Sauce","Louisiana Fiery Hot P│               │
+│                  │epper Sauce","Louisiana Fiery Hot Pepper Sauce","Louisiana Hot Spiced │               │
+│                  │Okra","Mascarpone Fabioli","Mascarpone Fabioli","Mozzarella di Giovann│               │
+│                  │i","Nord-Ost Matjeshering","Pavlova","Pavlova","Pavlova","Pâté chinois│               │
+│                  │","Pâté chinois","Queso Cabrales","Queso Cabrales","Queso Manchego La │               │
+│                  │Pastora","Queso Manchego La Pastora","Queso Manchego La Pastora","Racl│               │
+│                  │ette Courdavault","Raclette Courdavault","Rhönbräu Klosterbier","Rhönb│               │
+│                  │räu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhönbr│               │
+│                  │äu Klosterbier","Rhönbräu Klosterbier","Schoggi Schokolade","Sir Rodne│               │
+│                  │y's Marmalade","Sir Rodney's Marmalade","Spegesild","Tarte au sucre","│               │
+│                  │Tarte au sucre","Tarte au sucre","Tarte au sucre","Tofu","Tunnbröd","U│               │
+│                  │ncle Bob's Organic Dried Pears","Uncle Bob's Organic Dried Pears","Unc│               │
+│                  │le Bob's Organic Dried Pears","Wimmers gute Semmelknödel","Wimmers gut│               │
+│                  │e Semmelknödel","Wimmers gute Semmelknödel","Wimmers gute Semmelknödel│               │
+│                  │","Wimmers gute Semmelknödel","Wimmers gute Semmelknödel","Wimmers gut│               │
+│                  │e Semmelknödel","Wimmers gute Semmelknödel"]                          │               │
+├──────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Horst Kloss"     │["Aniseed Syrup","Camembert Pierrot","Camembert Pierrot","Camembert Pi│85             │
+│                  │errot","Camembert Pierrot","Camembert Pierrot","Camembert Pierrot","Ca│               │
+│                  │membert Pierrot","Camembert Pierrot","Chai","Chai","Chang","Chang","Ch│               │
+│                  │ang","Chang","Chang","Chang","Chartreuse verte","Chartreuse verte","Ch│               │
+│                  │ef Anton's Cajun Seasoning","Chef Anton's Cajun Seasoning","Côte de Bl│               │
+│                  │aye","Côte de Blaye","Côte de Blaye","Côte de Blaye","Escargots de Bou│               │
+│                  │rgogne","Flotemysost","Flotemysost","Gorgonzola Telino","Gorgonzola Te│               │
+│                  │lino","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Telino","Gor│               │
+│                  │gonzola Telino","Ikura","Ipoh Coffee","Ipoh Coffee","Konbu","Konbu","L│               │
+│                  │akkalikööri","Lakkalikööri","Lakkalikööri","Louisiana Fiery Hot Pepper│               │
+│                  │ Sauce","Louisiana Fiery Hot Pepper Sauce","Mozzarella di Giovanni","M│               │
+│                  │ozzarella di Giovanni","Northwoods Cranberry Sauce","Original Frankfur│               │
+│                  │ter grüne Soße","Original Frankfurter grüne Soße","Original Frankfurte│               │
+│                  │r grüne Soße","Original Frankfurter grüne Soße","Pavlova","Perth Pasti│               │
+│                  │es","Perth Pasties","Pâté chinois","Pâté chinois","Raclette Courdavaul│               │
+│                  │t","Raclette Courdavault","Rhönbräu Klosterbier","Rhönbräu Klosterbier│               │
+│                  │","Rhönbräu Klosterbier","Schoggi Schokolade","Sir Rodney's Marmalade"│               │
+│                  │,"Sir Rodney's Marmalade","Sir Rodney's Marmalade","Sir Rodney's Marma│               │
+│                  │lade","Tarte au sucre","Tarte au sucre","Tarte au sucre","Tarte au suc│               │
+│                  │re","Tarte au sucre","Tarte au sucre","Tarte au sucre","Tarte au sucre│               │
+│                  │","Tunnbröd","Uncle Bob's Organic Dried Pears","Uncle Bob's Organic Dr│               │
+│                  │ied Pears","Uncle Bob's Organic Dried Pears","Uncle Bob's Organic Drie│               │
+│                  │d Pears","Uncle Bob's Organic Dried Pears","Uncle Bob's Organic Dried │               │
+│                  │Pears","Wimmers gute Semmelknödel","Wimmers gute Semmelknödel","Wimmer│               │
+│                  │s gute Semmelknödel","Wimmers gute Semmelknödel"]                     │               │
+├──────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Patricia McKenna"│["Camembert Pierrot","Camembert Pierrot","Chai","Chang","Chang","Chang│63             │
+│                  │","Chang","Chartreuse verte","Chef Anton's Cajun Seasoning","Chef Anto│               │
+│                  │n's Cajun Seasoning","Escargots de Bourgogne","Escargots de Bourgogne"│               │
+│                  │,"Flotemysost","Flotemysost","Flotemysost","Flotemysost","Flotemysost"│               │
+│                  │,"Flotemysost","Flotemysost","Flotemysost","Gnocchi di nonna Alice","G│               │
+│                  │nocchi di nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alic│               │
+│                  │e","Gorgonzola Telino","Gorgonzola Telino","Gorgonzola Telino","Gorgon│               │
+│                  │zola Telino","Gorgonzola Telino","Gorgonzola Telino","Grandma's Boysen│               │
+│                  │berry Spread","Ikura","Ipoh Coffee","Jack's New England Clam Chowder",│               │
+│                  │"Jack's New England Clam Chowder","Jack's New England Clam Chowder","J│               │
+│                  │ack's New England Clam Chowder","Lakkalikööri","Louisiana Fiery Hot Pe│               │
+│                  │pper Sauce","Louisiana Fiery Hot Pepper Sauce","Mascarpone Fabioli","M│               │
+│                  │ascarpone Fabioli","Mascarpone Fabioli","Mascarpone Fabioli","Nord-Ost│               │
+│                  │ Matjeshering","Nord-Ost Matjeshering","Original Frankfurter grüne Soß│               │
+│                  │e","Original Frankfurter grüne Soße","Pavlova","Perth Pasties","Perth │               │
+│                  │Pasties","Queso Cabrales","Raclette Courdavault","Raclette Courdavault│               │
+│                  │","Raclette Courdavault","Rhönbräu Klosterbier","Rhönbräu Klosterbier"│               │
+│                  │,"Rhönbräu Klosterbier","Tarte au sucre","Tarte au sucre","Tarte au su│               │
+│                  │cre","Tarte au sucre","Tofu"]                                         │               │
+├──────────────────┼──────────────────────────────────────────────────────────────────────┼───────────────┤
+│"Maria Larsson"   │["Chang","Chang","Chang","Chang","Chang","Chang","Chartreuse verte","C│58             │
+│                  │hartreuse verte","Chef Anton's Cajun Seasoning","Chef Anton's Cajun Se│               │
+│                  │asoning","Escargots de Bourgogne","Flotemysost","Flotemysost","Gnocchi│               │
+│                  │ di nonna Alice","Gnocchi di nonna Alice","Gnocchi di nonna Alice","Gn│               │
+│                  │occhi di nonna Alice","Gorgonzola Telino","Gorgonzola Telino","Gorgonz│               │
+│                  │ola Telino","Jack's New England Clam Chowder","Jack's New England Clam│               │
+│                  │ Chowder","Jack's New England Clam Chowder","Jack's New England Clam C│               │
+│                  │howder","Jack's New England Clam Chowder","Jack's New England Clam Cho│               │
+│                  │wder","Lakkalikööri","Lakkalikööri","Louisiana Hot Spiced Okra","Mozza│               │
+│                  │rella di Giovanni","Nord-Ost Matjeshering","Pâté chinois","Pâté chinoi│               │
+│                  │s","Pâté chinois","Pâté chinois","Queso Cabrales","Queso Cabrales","Ra│               │
+│                  │clette Courdavault","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhö│               │
+│                  │nbräu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhön│               │
+│                  │bräu Klosterbier","Rhönbräu Klosterbier","Rhönbräu Klosterbier","Rhönb│               │
+│                  │räu Klosterbier","Röd Kaviar","Röd Kaviar","Spegesild","Tarte au sucre│               │
+│                  │","Tarte au sucre","Tarte au sucre","Tarte au sucre","Tunnbröd","Uncle│               │
+│                  │ Bob's Organic Dried Pears","Uncle Bob's Organic Dried Pears","Uncle B│               │
+│                  │ob's Organic Dried Pears"]                                            │               │
+└──────────────────┴──────────────────────────────────────────────────────────────────────┴───────────────┘
+
